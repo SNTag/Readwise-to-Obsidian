@@ -8,7 +8,9 @@ A Python pipeline that pulls highlights from Readwise into individual, atomic Ob
 
 Most Readwise → Obsidian integrations produce one file per book or article. This pipeline goes further: each highlight becomes its own standalone note with full YAML frontmatter, making highlights individually linkable, queryable via Dataview, and embeddable into daily notes.
 
-The pipeline is designed around deliberate curation. Not every highlight you make is worth keeping permanently — this system gives you a review layer (an Excel spreadsheet) between Readwise and your vault, so you decide what enters your knowledge bank.
+The pipeline is designed around deliberate curation. Not every highlight you make is worth keeping permanently — this system gives you a review layer (an Excel spreadsheet) between Readwise and your vault, so you decide what enters your knowledge bank. 
+
+Take note: At this time, the script mostly decides what you want to keep based on tags. Changes YOU make to the excel sheet may only last long enough for a single run!
 
 ---
 

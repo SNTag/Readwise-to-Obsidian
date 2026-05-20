@@ -42,7 +42,7 @@ from config import (
     OBSIDIAN_QUOTES_DIR, OBSIDIAN_STAGING_DIR,
     QUOTES_TEMPLATE_PATH, STAGING_DELAY,
     INCLUDE_VALUE, COUNTER_PADDING, EXTRA_TAGS, OBS_DATABASE_TYPE,
-    ALL_COLS, XLSX_SAVE_INTERVAL,
+    ALL_COLS, XLSX_SAVE_INTERVAL, BOOK_TITLE_AS_ALIAS,
 )
 
 FILENAME_PATTERN = "{date} - RW -- Q{counter}"
@@ -112,9 +112,10 @@ def build_frontmatter(row: dict, title: str) -> str:
     except Exception:
         date_added_fmt = date_added_raw
 
+    book_title = row.get("title", "")
     data = {
         "title":             title,
-        "book title":        row.get("title", ""),
+        "book title":        book_title,
         "author":            [row.get("author", "")],
         "date added":        date_added_fmt,
         "date modified":     fmt_datetime_now(),
@@ -130,6 +131,8 @@ def build_frontmatter(row: dict, title: str) -> str:
         "category":          row.get("category", "") or "",
         "highlight_id":      row.get("highlight_id", ""),
     }
+    if BOOK_TITLE_AS_ALIAS and book_title:
+        data["aliases"] = [f"[[{book_title}]]"]
     return yaml.dump(data, allow_unicode=True, sort_keys=False, default_flow_style=False)
 
 

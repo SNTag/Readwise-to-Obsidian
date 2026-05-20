@@ -51,6 +51,11 @@ EXCLUDE_TAGS       = ["study", "sy"]
 # Counter is zero-padded to this many digits (2 → Q00, Q01 ... Q99)
 COUNTER_PADDING = 2
 
+# --- Aliases ---
+# When True, the book title is added to each note's YAML aliases as a wikilink.
+# Example: aliases: ['[[The Innovator''s Dilemma]]']
+BOOK_TITLE_AS_ALIAS = False
+
 # --- YAML: extra static tags added to every note ---
 EXTRA_TAGS = ["readwise"]
 

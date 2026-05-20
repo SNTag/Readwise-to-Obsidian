@@ -17,15 +17,8 @@ COL_NAMES = [
 
 CURATION_COLS = ["CommonBook", "updated"]
 
-# --- Computed mappings (do not edit) ---
-_n         = len(READWISE_COLS)
-_overrides = (list(COL_NAMES) + [""] * _n)[:_n]
-XLSX_COLS  = [_overrides[i] or READWISE_COLS[i] for i in range(_n)]
-ALL_COLS   = XLSX_COLS + CURATION_COLS
-
-# Internal key ↔ XLSX header. Used by step1 and step2 to stay in sync.
-KEY_TO_HEADER = dict(zip(READWISE_COLS, XLSX_COLS))
-HEADER_TO_KEY = {v: k for k, v in KEY_TO_HEADER.items()}
+# Derived column values (XLSX_COLS, ALL_COLS, KEY_TO_HEADER, HEADER_TO_KEY)
+# are computed in columns.py — import them from there, not here.
 
 # TagOS Readwise → Commonplace Book Configuration
 # =============================================================================
@@ -42,28 +35,22 @@ QUOTES_TEMPLATE_PATH = ""
 # --- XLSX Sheet ---
 SHEET_NAME = "Highlights"
 
-# --- Staging delay ---
+# --- Timing ---
 # Save the XLSX every N rows processed (new or updated). Prevents data loss
 # if the script crashes mid-run. Set to 0 to disable periodic saves.
 XLSX_SAVE_INTERVAL = 1
 # Seconds to wait after moving each new note into the vault.
 # Gives Obsidian/Templater time to process each file before the next arrives.
 STAGING_DELAY = 1.0
-INCLUDE_VALUE = "Y"       # Value in CommonBook column to include a quote
-DEFAULT_VALUE = ""        # Default (empty = No)
 
 # --- Curation ---
 INCLUDE_VALUE = "Y"       # Value in CommonBook column to include a quote
-DEFAULT_VALUE = ""        # Default (empty = No)
-
-# --- CommonBook Auto-inclusion ---
 # New highlights are auto-marked Y in CommonBook only if their category is in
 # INCLUDE_CATEGORIES, AND they do not carry any tag in EXCLUDE_TAGS.
 # Tags are matched against the merged highlight+book tag string.
 # Readwise categories: books, articles, podcasts, tweets, supplementals
 INCLUDE_CATEGORIES = ["books", "supplementals"]
 EXCLUDE_TAGS       = ["study", "sy"]
-
 
 # --- Note Title ---
 # Format: YYYY-MM-DD -- Q{counter}

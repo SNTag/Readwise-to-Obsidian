@@ -27,10 +27,11 @@ from openpyxl.utils import get_column_letter
 from pathlib import Path
 from config import (
     READWISE_TOKEN, XLSX_PATH, SHEET_NAME,
-    ALL_COLS, READWISE_COLS, CURATION_COLS,
+    READWISE_COLS, CURATION_COLS,
     INCLUDE_CATEGORIES, EXCLUDE_TAGS,
-    XLSX_SAVE_INTERVAL, HEADER_TO_KEY,
+    XLSX_SAVE_INTERVAL,
 )
+from columns import ALL_COLS, HEADER_TO_KEY
 
 # ---------------------------------------------------------------------------
 # Logging setup

@@ -11,8 +11,20 @@ READWISE_COLS = [
     "tags", "date", "quote", "note", "location", "location_type",
     "source_url", "readwise_url", "category", "book_id",
 ]
+
+# Optional display-name overrides for XLSX column headers.
+# Use "" to keep the READWISE_COLS name at that position.
+# Must match the length of READWISE_COLS (shorter lists are padded with "").
+COL_NAMES = [
+    "", "", "", "", "",
+    "", "", "", "", "", "",
+    "", "", "", "",
+]
+
 CURATION_COLS = ["CommonBook", "updated"]
-ALL_COLS      = READWISE_COLS + CURATION_COLS
+
+# Derived column values (XLSX_COLS, ALL_COLS, KEY_TO_HEADER, HEADER_TO_KEY)
+# are computed in columns.py — import them from there, not here.
 
 # TagOS Readwise → Commonplace Book Configuration
 # =============================================================================
@@ -27,7 +39,7 @@ QUOTES_TEMPLATE_PATH = os.getenv("QUOTES_TEMPLATE_PATH", "")
 # --- XLSX Sheet ---
 SHEET_NAME = "Highlights"
 
-# --- Staging delay ---
+# --- Timing ---
 # Save the XLSX every N rows processed (new or updated). Prevents data loss
 # if the script crashes mid-run. Set to 0 to disable periodic saves.
 XLSX_SAVE_INTERVAL = 1
@@ -37,9 +49,6 @@ STAGING_DELAY = 1.0
 
 # --- Curation ---
 INCLUDE_VALUE = "Y"       # Value in CommonBook column to include a quote
-DEFAULT_VALUE = ""        # Default (empty = No)
-
-# --- CommonBook Auto-inclusion ---
 # New highlights are auto-marked Y in CommonBook only if their category is in
 # INCLUDE_CATEGORIES, AND they do not carry any tag in EXCLUDE_TAGS.
 # Tags are matched against the merged highlight+book tag string.
@@ -51,6 +60,11 @@ EXCLUDE_TAGS       = ["study", "sy"]
 # Format: YYYY-MM-DD -- Q{counter}
 # Counter is zero-padded to this many digits (2 → Q00, Q01 ... Q99)
 COUNTER_PADDING = 2
+
+# --- Aliases ---
+# When True, the book title is added to each note's YAML aliases as a wikilink.
+# Example: aliases: ['[[The Innovator''s Dilemma]]']
+BOOK_TITLE_AS_ALIAS = False
 
 # --- YAML: extra static tags added to every note ---
 EXTRA_TAGS = ["readwise"]

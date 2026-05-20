@@ -5,8 +5,27 @@ READWISE_COLS = [
     "tags", "date", "quote", "note", "location", "location_type",
     "source_url", "readwise_url", "category", "book_id",
 ]
+
+# Optional display-name overrides for XLSX column headers.
+# Use "" to keep the READWISE_COLS name at that position.
+# Must match the length of READWISE_COLS (shorter lists are padded with "").
+COL_NAMES = [
+    "", "", "", "", "",
+    "", "", "", "", "", "",
+    "", "", "", "",
+]
+
 CURATION_COLS = ["CommonBook", "updated"]
-ALL_COLS      = READWISE_COLS + CURATION_COLS
+
+# --- Computed mappings (do not edit) ---
+_n         = len(READWISE_COLS)
+_overrides = (list(COL_NAMES) + [""] * _n)[:_n]
+XLSX_COLS  = [_overrides[i] or READWISE_COLS[i] for i in range(_n)]
+ALL_COLS   = XLSX_COLS + CURATION_COLS
+
+# Internal key ↔ XLSX header. Used by step1 and step2 to stay in sync.
+KEY_TO_HEADER = dict(zip(READWISE_COLS, XLSX_COLS))
+HEADER_TO_KEY = {v: k for k, v in KEY_TO_HEADER.items()}
 
 # TagOS Readwise → Commonplace Book Configuration
 # =============================================================================

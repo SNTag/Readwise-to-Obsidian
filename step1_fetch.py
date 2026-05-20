@@ -29,7 +29,7 @@ from config import (
     READWISE_TOKEN, XLSX_PATH, SHEET_NAME,
     ALL_COLS, READWISE_COLS, CURATION_COLS,
     INCLUDE_CATEGORIES, EXCLUDE_TAGS,
-    XLSX_SAVE_INTERVAL,
+    XLSX_SAVE_INTERVAL, HEADER_TO_KEY,
 )
 
 # ---------------------------------------------------------------------------
@@ -177,8 +177,8 @@ def apply_table(ws):
 
 
 def apply_column_widths(ws):
-    for idx, col_name in enumerate(ALL_COLS, start=1):
-        ws.column_dimensions[get_column_letter(idx)].width = COL_WIDTHS.get(col_name, 15)
+    for idx, key in enumerate(READWISE_COLS + CURATION_COLS, start=1):
+        ws.column_dimensions[get_column_letter(idx)].width = COL_WIDTHS.get(key, 15)
 
 
 # ---------------------------------------------------------------------------
@@ -202,7 +202,7 @@ def load_or_create_workbook(path: str):
 
 
 def build_id_row_map(ws) -> dict:
-    id_col = ALL_COLS.index("highlight_id") + 1
+    id_col = READWISE_COLS.index("highlight_id") + 1  # position is stable regardless of header name
     return {
         str(row[id_col - 1].value): row[0].row
         for row in ws.iter_rows(min_row=2)
@@ -216,9 +216,10 @@ def write_row(ws, row_num: int, highlight: dict) -> bool:
     for col_idx, col_name in enumerate(ALL_COLS, start=1):
         if col_name in ("CommonBook", "updated"):
             continue                    # never overwrite curation columns
-        if col_name not in READWISE_COLS:
+        key = HEADER_TO_KEY.get(col_name, col_name)  # XLSX header → internal key
+        if key not in READWISE_COLS:
             continue                    # skip any unrecognised key
-        new_val = highlight.get(col_name, "")
+        new_val = highlight.get(key, "")
         old_val = ws.cell(row=row_num, column=col_idx).value
         if (old_val or "") != (new_val or ""):
             ws.cell(row=row_num, column=col_idx, value=new_val)

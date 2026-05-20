@@ -42,7 +42,7 @@ from config import (
     OBSIDIAN_QUOTES_DIR, OBSIDIAN_STAGING_DIR,
     QUOTES_TEMPLATE_PATH, STAGING_DELAY,
     INCLUDE_VALUE, COUNTER_PADDING, EXTRA_TAGS, OBS_DATABASE_TYPE,
-    ALL_COLS, XLSX_SAVE_INTERVAL, BOOK_TITLE_AS_ALIAS,
+    ALL_COLS, XLSX_SAVE_INTERVAL, BOOK_TITLE_AS_ALIAS, HEADER_TO_KEY,
 )
 
 FILENAME_PATTERN = "{date} - RW -- Q{counter}"
@@ -220,6 +220,7 @@ def load_accepted_rows(xlsx_path: str) -> tuple[object, object, list[dict], dict
     accepted, id_to_row = [], {}
     for row_num, row in enumerate(rows_iter, start=2):
         r = dict(zip(headers, (str(v) if v is not None else "" for v in row)))
+        r = {HEADER_TO_KEY.get(k, k): v for k, v in r.items()}  # XLSX header → internal key
         if r.get("highlight_id"):
             id_to_row[r["highlight_id"]] = row_num
         if r.get("CommonBook", "").strip() == INCLUDE_VALUE:

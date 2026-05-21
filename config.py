@@ -16,9 +16,9 @@ READWISE_COLS = [
 # Use "" to keep the READWISE_COLS name at that position.
 # Must match the length of READWISE_COLS (shorter lists are padded with "").
 COL_NAMES = [
-    "", "", "", "", "",
-    "", "", "", "", "", "",
-    "", "", "", "",
+    "highlight id", "", "", "date added", "date modified",
+    "", "", "", "", "", "location type",
+    "source", "RW url", "", "book id",
 ]
 
 CURATION_COLS = ["CommonBook", "updated"]
@@ -64,10 +64,10 @@ COUNTER_PADDING = 2
 # --- Aliases ---
 # When True, the book title is added to each note's YAML aliases as a wikilink.
 # Example: aliases: ['[[The Innovator''s Dilemma]]']
-BOOK_TITLE_AS_ALIAS = False
+BOOK_TITLE_AS_ALIAS = True
 
 # --- YAML: extra static tags added to every note ---
-EXTRA_TAGS = ["readwise"]
+EXTRA_TAGS = []
 
 # --- Obsidian Database Type tag (shown in your example notes) ---
 OBS_DATABASE_TYPE = "QuotesV0_3"

@@ -1,4 +1,10 @@
-# =============================================================================# --- XLSX Column Layout ---
+import os
+from dotenv import load_dotenv
+
+load_dotenv()  # reads .env from the project root if present
+
+# =============================================================================
+# --- XLSX Column Layout ---
 # Single definition shared by step1 and step2. Edit here only.
 READWISE_COLS = [
     "highlight_id", "title", "author", "date_added", "date_modified",
@@ -23,14 +29,12 @@ CURATION_COLS = ["CommonBook", "updated"]
 # TagOS Readwise → Commonplace Book Configuration
 # =============================================================================
 
-# --- Readwise API ---
-READWISE_TOKEN = ""  # https://readwise.io/access_token
-
-# --- Paths ---
-XLSX_PATH            = ""
-OBSIDIAN_QUOTES_DIR  = ""
-OBSIDIAN_STAGING_DIR = ""
-QUOTES_TEMPLATE_PATH = ""
+# --- Personal variables (set in .env, never committed) ---
+READWISE_TOKEN       = os.getenv("READWISE_TOKEN", "")   # https://readwise.io/access_token
+XLSX_PATH            = os.getenv("XLSX_PATH", "")
+OBSIDIAN_QUOTES_DIR  = os.getenv("OBSIDIAN_QUOTES_DIR", "")
+OBSIDIAN_STAGING_DIR = os.getenv("OBSIDIAN_STAGING_DIR", "")
+QUOTES_TEMPLATE_PATH = os.getenv("QUOTES_TEMPLATE_PATH", "")
 
 # --- XLSX Sheet ---
 SHEET_NAME = "Highlights"

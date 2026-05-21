@@ -44,13 +44,14 @@ from config import (
     INCLUDE_VALUE, COUNTER_PADDING, EXTRA_TAGS, OBS_DATABASE_TYPE,
     XLSX_SAVE_INTERVAL,
 )
-from columns import ALL_COLS, HEADER_TO_KEY
+from columns import ALL_COLS, HEADER_TO_KEY, KEY_TO_HEADER
 
 FILENAME_PATTERN = "{date} - RW -- Q{counter}"
 
 COMPARE_FIELDS = {
     "book title", "author", "tags", "Quote",
-    "note", "source_url", "readwise_url", "category", "highlight_id",
+    "note", KEY_TO_HEADER["source_url"], KEY_TO_HEADER["readwise_url"],
+    "category", KEY_TO_HEADER["highlight_id"],
 }
 
 # ---------------------------------------------------------------------------
@@ -126,11 +127,11 @@ def build_frontmatter(row: dict, title: str) -> str:
         "Quote":             row.get("quote", ""),
         "note":              row.get("note", "") or "",
         "location":          row.get("location", "") or "",
-        "location_type":     row.get("location_type", "") or "",
-        "source_url":        row.get("source_url", "") or "",
-        "readwise_url":      row.get("readwise_url", "") or "",
-        "category":          row.get("category", "") or "",
-        "highlight_id":      row.get("highlight_id", ""),
+        KEY_TO_HEADER["location_type"]: row.get("location_type", "") or "",
+        KEY_TO_HEADER["source_url"]:    row.get("source_url", "") or "",
+        KEY_TO_HEADER["readwise_url"]:  row.get("readwise_url", "") or "",
+        "category":                     row.get("category", "") or "",
+        KEY_TO_HEADER["highlight_id"]:  row.get("highlight_id", ""),
     }
     return yaml.dump(data, allow_unicode=True, sort_keys=False, default_flow_style=False)
 
@@ -200,7 +201,8 @@ def find_existing_file(vault_dir: Path, date_str: str, highlight_id: str) -> Pat
     for f in vault_dir.glob(f"{date_str}*.md"):
         try:
             content = f.read_text(encoding="utf-8")
-            if re.search(rf"highlight_id:\s*['\"]?{re.escape(highlight_id)}['\"]?", content):
+            hid_key = re.escape(KEY_TO_HEADER["highlight_id"])
+            if re.search(rf"{hid_key}:\s*['\"]?{re.escape(highlight_id)}['\"]?", content):
                 return f
         except Exception:
             pass

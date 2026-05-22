@@ -12,6 +12,8 @@ The pipeline is designed around deliberate curation. Not every highlight you mak
 
 Take note: At this time, the script mostly decides what you want to keep based on tags. Changes YOU make to the excel sheet may only last long enough for a single run!
 
+Also, current update processes are poor. If you change something in the config, best approach is to delete the xlsx and rebuild all files.
+
 ---
 
 ## How It Works

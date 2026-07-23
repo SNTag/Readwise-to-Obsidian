@@ -88,7 +88,7 @@ Create a file at `QUOTES_TEMPLATE_PATH`. This is the note body that Templater wi
 A minimal example:
 
 ```markdown
-[[Quotes]] || [[<% moment(tp.frontmatter["date added"], "YYYY-MM-DD, h:mm:ss a").format("YYYY-MM-DD") %>]]
+[[Quotes]] || [[<% tp.file.title.slice(0, 10) %>]]
 ***
 ![[Quotes Information#^yourid]]
 
@@ -195,13 +195,10 @@ title: 2025-03-01 - RW -- Q00
 book title: The Innovator's Dilemma
 author:
   - Clayton Christensen
-date added: 2025-03-01, 2:14:33 PM
-date modified: 2025-05-17, 4:31:35 PM
 tags:
   - readwise
 obs note type: Quotes
 obs version: v0_5_0
-date: '2025-03-01'
 Quote: The reason why it is so difficult for existing firms to capitalize on disruptive
   innovations is that their processes and values are optimized for sustaining innovations.
 note: Key thesis of the book
@@ -219,7 +216,7 @@ Step2 never blindly overwrites existing notes. It compares only the fields that 
 
 **Tracked fields:** `book title`, `author`, `tags`, `Quote`, `note`, `source`, `RW source`, `class`, `highlight id`
 
-**Never compared:** `title`, `date`, `date added`, `date modified`, `obs note type`, `obs version`, note body
+**Never compared:** `title`, `obs note type`, `obs version`, note body
 
 This means edits you make inside Obsidian (annotations, links, body content) are never overwritten by a re-run. Only a genuine change in Readwise (e.g. you edited the highlight text or added a note) triggers an update, and only when `updated = Y` is set by step1.
 

@@ -18,7 +18,7 @@ Overwrite policy:
   - Note exists + updated blank               → skip silently.
 
 Tracked fields (COMPARE_FIELDS): book title, author, tags, Quote, note,
-  source_url, readwise_url, category, highlight_id.
+  source, RW source, class, highlight id.
 
 Shutdown: press Ctrl+C once to finish the current row, save XLSX, and exit.
 
@@ -35,7 +35,6 @@ import signal
 import logging
 import openpyxl
 from pathlib import Path
-from datetime import datetime
 from collections import defaultdict
 from config import (
     XLSX_PATH, SHEET_NAME,
@@ -99,32 +98,18 @@ def load_template() -> str:
 # Frontmatter + note rendering
 # ---------------------------------------------------------------------------
 
-def fmt_datetime_now() -> str:
-    return datetime.now().strftime("%Y-%m-%d, %-I:%M:%S %p")
-
-
 def build_frontmatter(row: dict, title: str) -> str:
     tags = [t.strip() for t in row.get("tags", "").split(",") if t.strip()]
     tags += EXTRA_TAGS
-
-    date_added_raw = row.get("date_added", "")
-    try:
-        dt = datetime.fromisoformat(date_added_raw.replace("Z", "+00:00"))
-        date_added_fmt = dt.strftime("%Y-%m-%d, %-I:%M:%S %p")
-    except Exception:
-        date_added_fmt = date_added_raw
 
     book_title = row.get("title", "")
     data = {
         "title":             title,
         "book title":        f"[[{book_title}]]" if book_title else "",
         "author":            [row.get("author", "")],
-        "date added":        date_added_fmt,
-        "date modified":     fmt_datetime_now(),
         "tags":              tags,
         "obs note type":     OBS_NOTE_TYPE,
         "obs version":       OBS_VERSION,
-        "date":              row.get("date", ""),
         "Quote":             row.get("quote", ""),
         "note":              row.get("note", "") or "",
         KEY_TO_HEADER["source_url"]:    row.get("source_url", "") or "",

@@ -41,7 +41,7 @@ from config import (
     XLSX_PATH, SHEET_NAME,
     OBSIDIAN_QUOTES_DIR, OBSIDIAN_STAGING_DIR,
     QUOTES_TEMPLATE_PATH, STAGING_DELAY,
-    INCLUDE_VALUE, COUNTER_PADDING, EXTRA_TAGS, OBS_DATABASE_TYPE,
+    INCLUDE_VALUE, COUNTER_PADDING, EXTRA_TAGS, OBS_NOTE_TYPE, OBS_VERSION,
     XLSX_SAVE_INTERVAL,
 )
 from columns import ALL_COLS, HEADER_TO_KEY, KEY_TO_HEADER
@@ -50,8 +50,8 @@ FILENAME_PATTERN = "{date} - RW -- Q{counter}"
 
 COMPARE_FIELDS = {
     "book title", "author", "tags", "Quote",
-    "note", KEY_TO_HEADER["source_url"], KEY_TO_HEADER["readwise_url"],
-    "category", KEY_TO_HEADER["highlight_id"],
+    "note", KEY_TO_HEADER["source_url"], "RW source",
+    "class", KEY_TO_HEADER["highlight_id"],
 }
 
 # ---------------------------------------------------------------------------
@@ -122,15 +122,14 @@ def build_frontmatter(row: dict, title: str) -> str:
         "date added":        date_added_fmt,
         "date modified":     fmt_datetime_now(),
         "tags":              tags,
-        "Obs Database Type": OBS_DATABASE_TYPE,
+        "obs note type":     OBS_NOTE_TYPE,
+        "obs version":       OBS_VERSION,
         "date":              row.get("date", ""),
         "Quote":             row.get("quote", ""),
         "note":              row.get("note", "") or "",
-        "location":          row.get("location", "") or "",
-        KEY_TO_HEADER["location_type"]: row.get("location_type", "") or "",
         KEY_TO_HEADER["source_url"]:    row.get("source_url", "") or "",
-        KEY_TO_HEADER["readwise_url"]:  row.get("readwise_url", "") or "",
-        "category":                     row.get("category", "") or "",
+        "RW source":                    row.get("readwise_url", "") or "",
+        "class":                        row.get("category", "") or "",
         KEY_TO_HEADER["highlight_id"]:  row.get("highlight_id", ""),
     }
     return yaml.dump(data, allow_unicode=True, sort_keys=False, default_flow_style=False)

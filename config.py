@@ -64,5 +64,6 @@ COUNTER_PADDING = 2
 # --- YAML: extra static tags added to every note ---
 EXTRA_TAGS = []
 
-# --- Obsidian Database Type tag (shown in your example notes) ---
-OBS_DATABASE_TYPE = "QuotesV0_3"
+# --- Obsidian note type + version (written to YAML frontmatter) ---
+OBS_NOTE_TYPE = "Quotes"
+OBS_VERSION   = "v0_5_0"

@@ -98,15 +98,51 @@ def load_template() -> str:
 # Frontmatter + note rendering
 # ---------------------------------------------------------------------------
 
+def sanitize_tag(tag: str) -> str:
+    """Coerce a Readwise tag into a valid Obsidian tag.
+
+    Obsidian tags allow letters, digits, '_', '-' and '/' (nesting) only.
+    Spaces and other characters are replaced with '-'; a leading '#' and
+    stray leading/trailing separators are stripped.
+    """
+    t = tag.strip().lstrip("#")
+    t = re.sub(r"\s+", "-", t)               # whitespace → hyphen
+    t = re.sub(r"[^\w\-/]", "-", t)          # any other invalid char → hyphen
+    t = re.sub(r"-{2,}", "-", t)             # collapse repeats
+    return t.strip("-/")
+
+
+def split_authors(raw: str) -> list:
+    """Split a Readwise author string into individual authors.
+
+    Handles the common separators (',', ';', '&', ' and ') and drops empties.
+    """
+    parts = re.split(r"\s*(?:,|;|&|\band\b)\s*", raw or "")
+    return [p.strip() for p in parts if p.strip()]
+
+
+def _is_empty(value) -> bool:
+    """True for values that should be omitted from the frontmatter."""
+    if value is None:
+        return True
+    if isinstance(value, str):
+        return value.strip() == ""
+    if isinstance(value, list):
+        return all(_is_empty(v) for v in value)
+    return False
+
+
 def build_frontmatter(row: dict, title: str) -> str:
     tags = [t.strip() for t in row.get("tags", "").split(",") if t.strip()]
     tags += EXTRA_TAGS
+    tags = [t for t in (sanitize_tag(t) for t in tags) if t]
+    tags = list(dict.fromkeys(tags))         # dedupe, preserve order
 
     book_title = row.get("title", "")
     data = {
         "title":             title,
         "book title":        f"[[{book_title}]]" if book_title else "",
-        "author":            [row.get("author", "")],
+        "author":            split_authors(row.get("author", "")),
         "tags":              tags,
         "obs note type":     OBS_NOTE_TYPE,
         "obs version":       OBS_VERSION,
@@ -117,6 +153,7 @@ def build_frontmatter(row: dict, title: str) -> str:
         "class":                        row.get("category", "") or "",
         KEY_TO_HEADER["highlight_id"]:  row.get("highlight_id", ""),
     }
+    data = {k: v for k, v in data.items() if not _is_empty(v)}
     return yaml.dump(data, allow_unicode=True, sort_keys=False, default_flow_style=False)
 
 

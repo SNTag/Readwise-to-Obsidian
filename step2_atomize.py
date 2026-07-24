@@ -18,7 +18,7 @@ Overwrite policy:
   - Note exists + updated blank               → skip silently.
 
 Tracked fields (COMPARE_FIELDS): book title, author, tags, Quote, note,
-  source, RW source, class, highlight id.
+  source, RW source, highlight id.
 
 Shutdown: press Ctrl+C once to finish the current row, save XLSX, and exit.
 
@@ -50,7 +50,7 @@ FILENAME_PATTERN = "{date} - RW -- Q{counter}"
 COMPARE_FIELDS = {
     "book title", "author", "tags", "Quote",
     "note", KEY_TO_HEADER["source_url"], "RW source",
-    "class", KEY_TO_HEADER["highlight_id"],
+    KEY_TO_HEADER["highlight_id"],
 }
 
 # ---------------------------------------------------------------------------
@@ -150,7 +150,6 @@ def build_frontmatter(row: dict, title: str) -> str:
         "note":              row.get("note", "") or "",
         KEY_TO_HEADER["source_url"]:    row.get("source_url", "") or "",
         "RW source":                    row.get("readwise_url", "") or "",
-        "class":                        row.get("category", "") or "",
         KEY_TO_HEADER["highlight_id"]:  row.get("highlight_id", ""),
     }
     data = {k: v for k, v in data.items() if not _is_empty(v)}

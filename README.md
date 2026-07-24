@@ -204,7 +204,6 @@ Quote: The reason why it is so difficult for existing firms to capitalize on dis
 note: Key thesis of the book
 source: ''
 RW source: https://readwise.io/open/123456789
-class: books
 highlight id: '123456789'
 ```
 
@@ -214,7 +213,7 @@ highlight id: '123456789'
 
 Step2 never blindly overwrites existing notes. It compares only the fields that Readwise controls:
 
-**Tracked fields:** `book title`, `author`, `tags`, `Quote`, `note`, `source`, `RW source`, `class`, `highlight id`
+**Tracked fields:** `book title`, `author`, `tags`, `Quote`, `note`, `source`, `RW source`, `highlight id`
 
 **Never compared:** `title`, `obs note type`, `obs version`, note body
 

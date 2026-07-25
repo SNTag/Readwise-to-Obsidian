@@ -201,7 +201,7 @@ obs note type: Quotes
 obs version: v0_5_0
 Quote: The reason why it is so difficult for existing firms to capitalize on disruptive
   innovations is that their processes and values are optimized for sustaining innovations.
-note: Key thesis of the book
+summary: Key thesis of the book
 source: ''
 RW source: https://readwise.io/open/123456789
 highlight id: '123456789'
@@ -213,7 +213,7 @@ highlight id: '123456789'
 
 Step2 never blindly overwrites existing notes. It compares only the fields that Readwise controls:
 
-**Tracked fields:** `book title`, `author`, `tags`, `Quote`, `note`, `source`, `RW source`, `highlight id`
+**Tracked fields:** `book title`, `author`, `tags`, `Quote`, `summary`, `source`, `RW source`, `highlight id`
 
 **Never compared:** `title`, `obs note type`, `obs version`, note body
 

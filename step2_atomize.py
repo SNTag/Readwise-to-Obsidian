@@ -17,7 +17,7 @@ Overwrite policy:
   - Note exists + updated = Y + no change     → skip; clear flag.
   - Note exists + updated blank               → skip silently.
 
-Tracked fields (COMPARE_FIELDS): book title, author, tags, Quote, note,
+Tracked fields (COMPARE_FIELDS): book title, author, tags, Quote, summary,
   source, RW source, highlight id.
 
 Shutdown: press Ctrl+C once to finish the current row, save XLSX, and exit.
@@ -49,7 +49,7 @@ FILENAME_PATTERN = "{date} - RW -- Q{counter}"
 
 COMPARE_FIELDS = {
     "book title", "author", "tags", "Quote",
-    "note", KEY_TO_HEADER["source_url"], "RW source",
+    "summary", KEY_TO_HEADER["source_url"], "RW source",
     KEY_TO_HEADER["highlight_id"],
 }
 
@@ -147,7 +147,7 @@ def build_frontmatter(row: dict, title: str) -> str:
         "obs note type":     OBS_NOTE_TYPE,
         "obs version":       OBS_VERSION,
         "Quote":             row.get("quote", ""),
-        "note":              row.get("note", "") or "",
+        "summary":           row.get("note", "") or "",
         KEY_TO_HEADER["source_url"]:    row.get("source_url", "") or "",
         "RW source":                    row.get("readwise_url", "") or "",
         KEY_TO_HEADER["highlight_id"]:  row.get("highlight_id", ""),

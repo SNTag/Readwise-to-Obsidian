@@ -88,7 +88,7 @@ Create a file at `QUOTES_TEMPLATE_PATH`. This is the note body that Templater wi
 A minimal example:
 
 ```markdown
-[[Quotes]] || [[<% moment(tp.frontmatter["date added"], "YYYY-MM-DD, h:mm:ss a").format("YYYY-MM-DD") %>]]
+[[Quotes]] || [[<% tp.file.title.slice(0, 10) %>]]
 ***
 ![[Quotes Information#^yourid]]
 
@@ -195,21 +195,16 @@ title: 2025-03-01 - RW -- Q00
 book title: The Innovator's Dilemma
 author:
   - Clayton Christensen
-date added: 2025-03-01, 2:14:33 PM
-date modified: 2025-05-17, 4:31:35 PM
 tags:
   - readwise
-Obs Database Type: QuotesV0_3
-date: '2025-03-01'
+obs note type: Quotes
+obs version: v0_5_0
 Quote: The reason why it is so difficult for existing firms to capitalize on disruptive
   innovations is that their processes and values are optimized for sustaining innovations.
-note: Key thesis of the book
-location: '112'
-location_type: page
-source_url: ''
-readwise_url: https://readwise.io/open/123456789
-category: books
-highlight_id: '123456789'
+summary: Key thesis of the book
+source: ''
+RW source: https://readwise.io/open/123456789
+highlight id: '123456789'
 ```
 
 ---
@@ -218,9 +213,9 @@ highlight_id: '123456789'
 
 Step2 never blindly overwrites existing notes. It compares only the fields that Readwise controls:
 
-**Tracked fields:** `book title`, `author`, `tags`, `Quote`, `note`, `source_url`, `readwise_url`, `category`, `highlight_id`
+**Tracked fields:** `book title`, `author`, `tags`, `Quote`, `summary`, `source`, `RW source`, `highlight id`
 
-**Never compared:** `title`, `date`, `date added`, `date modified`, `location`, `location_type`, note body
+**Never compared:** `title`, `obs note type`, `obs version`, note body
 
 This means edits you make inside Obsidian (annotations, links, body content) are never overwritten by a re-run. Only a genuine change in Readwise (e.g. you edited the highlight text or added a note) triggers an update, and only when `updated = Y` is set by step1.
 

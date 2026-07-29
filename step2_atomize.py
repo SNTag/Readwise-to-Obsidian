@@ -17,8 +17,8 @@ Overwrite policy:
   - Note exists + updated = Y + no change     → skip; clear flag.
   - Note exists + updated blank               → skip silently.
 
-Tracked fields (COMPARE_FIELDS): book title, author, tags, Quote, note,
-  source_url, readwise_url, category, highlight_id.
+Tracked fields (COMPARE_FIELDS): book title, author, tags, Quote, summary,
+  source, RW source, highlight id.
 
 Shutdown: press Ctrl+C once to finish the current row, save XLSX, and exit.
 
@@ -35,13 +35,12 @@ import signal
 import logging
 import openpyxl
 from pathlib import Path
-from datetime import datetime
 from collections import defaultdict
 from config import (
     XLSX_PATH, SHEET_NAME,
     OBSIDIAN_QUOTES_DIR, OBSIDIAN_STAGING_DIR,
     QUOTES_TEMPLATE_PATH, STAGING_DELAY,
-    INCLUDE_VALUE, COUNTER_PADDING, EXTRA_TAGS, OBS_DATABASE_TYPE,
+    INCLUDE_VALUE, COUNTER_PADDING, EXTRA_TAGS, OBS_NOTE_TYPE, OBS_VERSION,
     XLSX_SAVE_INTERVAL,
 )
 from columns import ALL_COLS, HEADER_TO_KEY, KEY_TO_HEADER
@@ -50,8 +49,8 @@ FILENAME_PATTERN = "{date} - RW -- Q{counter}"
 
 COMPARE_FIELDS = {
     "book title", "author", "tags", "Quote",
-    "note", KEY_TO_HEADER["source_url"], KEY_TO_HEADER["readwise_url"],
-    "category", KEY_TO_HEADER["highlight_id"],
+    "summary", KEY_TO_HEADER["source_url"], "RW source",
+    KEY_TO_HEADER["highlight_id"],
 }
 
 # ---------------------------------------------------------------------------
@@ -99,40 +98,61 @@ def load_template() -> str:
 # Frontmatter + note rendering
 # ---------------------------------------------------------------------------
 
-def fmt_datetime_now() -> str:
-    return datetime.now().strftime("%Y-%m-%d, %-I:%M:%S %p")
+def sanitize_tag(tag: str) -> str:
+    """Coerce a Readwise tag into a valid Obsidian tag.
+
+    Obsidian tags allow letters, digits, '_', '-' and '/' (nesting) only.
+    Spaces and other characters are replaced with '-'; a leading '#' and
+    stray leading/trailing separators are stripped.
+    """
+    t = tag.strip().lstrip("#")
+    t = re.sub(r"\s+", "-", t)               # whitespace → hyphen
+    t = re.sub(r"[^\w\-/]", "-", t)          # any other invalid char → hyphen
+    t = re.sub(r"-{2,}", "-", t)             # collapse repeats
+    return t.strip("-/")
+
+
+def split_authors(raw: str) -> list:
+    """Split a Readwise author string into individual authors.
+
+    Handles the common separators (',', ';', '&', ' and ') and drops empties.
+    """
+    parts = re.split(r"\s*(?:,|;|&|\band\b)\s*", raw or "")
+    return [p.strip() for p in parts if p.strip()]
+
+
+def _is_empty(value) -> bool:
+    """True for values that should be omitted from the frontmatter."""
+    if value is None:
+        return True
+    if isinstance(value, str):
+        return value.strip() == ""
+    if isinstance(value, list):
+        return all(_is_empty(v) for v in value)
+    return False
 
 
 def build_frontmatter(row: dict, title: str) -> str:
     tags = [t.strip() for t in row.get("tags", "").split(",") if t.strip()]
     tags += EXTRA_TAGS
-
-    date_added_raw = row.get("date_added", "")
-    try:
-        dt = datetime.fromisoformat(date_added_raw.replace("Z", "+00:00"))
-        date_added_fmt = dt.strftime("%Y-%m-%d, %-I:%M:%S %p")
-    except Exception:
-        date_added_fmt = date_added_raw
+    tags = [t for t in (sanitize_tag(t) for t in tags) if t]
+    tags = list(dict.fromkeys(tags))         # dedupe, preserve order
 
     book_title = row.get("title", "")
     data = {
         "title":             title,
         "book title":        f"[[{book_title}]]" if book_title else "",
-        "author":            [row.get("author", "")],
-        "date added":        date_added_fmt,
-        "date modified":     fmt_datetime_now(),
+        "author":            split_authors(row.get("author", "")),
         "tags":              tags,
-        "Obs Database Type": OBS_DATABASE_TYPE,
-        "date":              row.get("date", ""),
+        "obs note type":     OBS_NOTE_TYPE,
+        "obs version":       OBS_VERSION,
         "Quote":             row.get("quote", ""),
-        "note":              row.get("note", "") or "",
-        "location":          row.get("location", "") or "",
-        KEY_TO_HEADER["location_type"]: row.get("location_type", "") or "",
+        "summary":           row.get("note", "") or "",
         KEY_TO_HEADER["source_url"]:    row.get("source_url", "") or "",
-        KEY_TO_HEADER["readwise_url"]:  row.get("readwise_url", "") or "",
-        "category":                     row.get("category", "") or "",
+        "RW source":                    row.get("readwise_url", "") or "",
         KEY_TO_HEADER["highlight_id"]:  row.get("highlight_id", ""),
     }
+    data = {k: v for k, v in data.items() if not _is_empty(v)}
     return yaml.dump(data, allow_unicode=True, sort_keys=False, default_flow_style=False)
 
 
